@@ -63,7 +63,7 @@ else {
       echo $e->getMessage();
       }
 
-    echo "Minified CSS file written to" . $minified_filename ."\n";
+    echo "Minified CSS file written to " . $minified_filename ."\n";
 }
 
 // Make sure file is actually a valid CSS file..
