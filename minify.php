@@ -1,11 +1,9 @@
 #!/usr/bin/php
-<?php # minify.php - Nate Nasteff 2020
+<?php # minify.php - CSS minifier for CLI - Nate Nasteff 2020
 
-// A simple CSS minifier to be run from the command line.
+# If no args are received from CLI or help is requested, print instructions..
 
-// If no args are received from CL or help is requested..
-
-if ($argc != 2 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) { 
+if ($argc == 1 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) { 
   
 ?>
 
@@ -19,6 +17,21 @@ the original name.
 
 <?php    
 } 
+
+// Make sure no second argument gets passed at CLI
+// TODO: allow multiple css files at once
+
+elseif ($argc > 2) { 
+?>
+
+Invalid second argument.
+
+    Usage:
+    minify <foo.css>
+
+<?php
+
+}
 
 else {
   // Define needles for stripping newlines and spaces
