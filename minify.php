@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php # minify.php - CSS minifier for CLI - Nate Nasteff 2020
 
-# If no args are received from CLI or help is requested, print instructions..
+// If no args are received from CLI or help is requested, print instructions..
 
 if ($argc == 1 || in_array($argv[1], array('--help', '-help', '-h', '-?'))) { 
   
@@ -19,7 +19,7 @@ the original name.
 } 
 
 // Make sure no second argument gets passed at CLI
-// TODO: allow multiple css files at once
+// TODO: Allow multiple css files at once
 
 elseif ($argc > 2) { 
 ?>
@@ -30,38 +30,33 @@ Invalid second argument.
     minify <foo.css>
 
 <?php
-
 }
 
 else {
-  // Define needles for stripping newlines and spaces
-
-  $needles = ["\n", " "];
 
   // Define regex patterns to strip comments
 
-  $regex = array(
+  $regex = [
     "`^([\t\s]+)`ism"=>'',
     "`^\/\*(.+?)\*\/`ism"=>"",
-    "`([\n\A;]+)\/\*(.+?)\*\/`ism"=>"$1",
-    "`([\n\A;\s]+)//(.+?)[\n\r]`ism"=>"$1\n",
-    "`(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+`ism"=>"\n"
-    );
+    "`([\n\A;]+)\/\*(.+?)\*\/`ism"=>"",
+    "`([\n\A;\s]+)//(.+?)[\n\r]`ism"=>"",
+    "`(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+`ism"=>"",
+    "/\s+/"=>'',
+    "/;}/"=>'}'
+  ];
 
-  // Check that the file name is valid, and assign contents to css_str
+  // Check that the file name is valid
+  // TODO: Add logic for multiple files
 
   if (file_exists($argv[1])){
 
-    $css_str = file_get_contents($argv[1]);
+    // Define anonymous func to return a minified string
 
-    // Remove comments, strip whitespaces / newlines
-
-    $css_str = preg_replace(array_keys($regex), $regex, $css_str);
-    $css_str = str_replace($needles, "", $css_str);
-
-    // Strip trailing semicolons at the end of css definitions
-
-    $css_str = str_replace(";}", "}", $css_str);
+    $minify = function() use (&$argv, &$regex){ 
+        $css_str = file_get_contents($argv[1]);
+        return preg_replace(array_keys($regex), $regex, $css_str);
+    };
 
     // Update filename
 
@@ -69,7 +64,7 @@ else {
 
     // Attempt to save the new minified CSS
     try {
-      file_put_contents($minified_filename, $css_str);
+      file_put_contents($minified_filename, $minify());
       } 
     
     catch (Exception $e) {
@@ -77,19 +72,19 @@ else {
       }
 
     echo "Minified CSS file written to " . $minified_filename ."\n";
+    }
+
+  // Make sure file is actually a valid CSS file..
+
+  else if (!strpos($argv[1], '.css')) {
+    echo "Not a valid CSS file!";
+  }
+
+  // If no file is found / incorrect filename..
+
+  else {
+    echo "File not found or incorrect filename!";
+  }
 }
 
-// Make sure file is actually a valid CSS file..
-
-else if (!strpos($argv[1], '.css')) {
-  echo "Not a valid CSS file!";
-}
-
-// If no file is found / incorrect filename..
-
-else {
-  echo "File not found or incorrect filename!";
-}
-
-}
 ?>

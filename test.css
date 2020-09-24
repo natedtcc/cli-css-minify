@@ -1,20 +1,24 @@
 html {
     padding: 0;
     margin: 0;
+
+
     width: 100%;
+    
     height: 100%;
 }
 
 /* Adding some comments */
 
 html {
-    padding: 0;
+    padding: 0;   
     margin: 0;
-    width: 100%;
-    height: 100%;
+    width: 100%;   
+    height:  100%;   
 }
 
 a {
     padding: 0;
+    
     content: '/* Test */';
 }
